@@ -2,6 +2,10 @@ pipeline {
     environment {
         DOCKER_ID = "jlnlndr17"
         DOCKER_TAG = "v.${BUILD_ID}.0"
+        DEV_NAMESPACE = "dev"
+        QA_NAMESPACE = "qa"
+        STAGING_NAMESPACE = "staging"
+        PROD_NAMESPACE = "prod"
     }
     agent any
     stages {
@@ -30,7 +34,8 @@ pipeline {
                 branch 'development'
             }
             steps {
-                // Deployment to dev environment
+                echo 'Deploying to Dev environment'
+                deployToKubernetes(namespace: DEV_NAMESPACE)
             }
         }
         stage('Deploy to QA') {
@@ -38,7 +43,8 @@ pipeline {
                 branch 'qa'
             }
             steps {
-                // Deployment to QA environment
+                echo 'Deploying to QA environment'
+                deployToKubernetes(namespace: QA_NAMESPACE)
             }
         }
         stage('Deploy to Staging') {
@@ -46,7 +52,8 @@ pipeline {
                 branch 'staging'
             }
             steps {
-                // Deployment to staging environment
+                echo 'Deploying to Staging environment'
+                deployToKubernetes(namespace: STAGING_NAMESPACE)
             }
         }
         stage('Deploy to Prod') {
@@ -54,11 +61,17 @@ pipeline {
                 branch 'master'
             }
             steps {
-                timeout(time: 15, unit: "MINUTES") {
-                    input message: 'Do you want to deploy to production?', ok: 'Yes'
-                }
-                // Deployment to production environment
+                echo 'Deploying to Production environment'
+                deployToKubernetes(namespace: PROD_NAMESPACE)
             }
         }
     }
+}
+
+def deployToKubernetes(namespace) {
+    // Utiliser kubectl ou Helm pour déployer les ressources dans le namespace spécifié
+    // Par exemple :
+    sh "kubectl apply -f ./kubernetes/${namespace}"
+    // Ou
+    // sh "helm upgrade --install myapp ./helm-chart --namespace=${namespace}"
 }
