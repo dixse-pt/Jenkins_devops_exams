@@ -15,9 +15,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Dev environment'
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                // Place your deployment steps here for the development environment
             }
         }
         stage('Deploy to QA') {
@@ -26,9 +24,7 @@ pipeline {
             }
             steps {
                 echo 'Deploying to QA environment'
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                // Place your deployment steps here for the QA environment
             }
         }
         stage('Deploy to Staging') {
@@ -37,23 +33,18 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Staging environment'
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                // Place your deployment steps here for the staging environment
             }
         }
         stage('Deploy to Prod') {
             when {
                 branch 'master'
-                beforeAgent true
             }
             steps {
                 script {
                     input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
                     echo 'Deploying to Production environment'
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                    // Place your deployment steps here for the production environment
                 }
             }
         }
