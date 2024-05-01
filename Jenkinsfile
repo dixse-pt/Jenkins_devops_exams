@@ -46,16 +46,15 @@ pipeline {
             when {
                 branch 'master'
                 beforeAgent true
-                input {
-                    message "Proceed with deployment to Production?"
-                    ok "Deploy to Production"
-                }
             }
             steps {
-                echo 'Deploying to Production environment'
-                deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                script {
+                    input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
+                    echo 'Deploying to Production environment'
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                }
             }
         }
     }
