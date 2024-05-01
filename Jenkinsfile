@@ -10,6 +10,9 @@ pipeline {
     agent any
     stages {
         stage('Deploy to Dev') {
+            when {
+                branch 'development'
+            }
             steps {
                 echo 'Deploying to Dev environment'
                 deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
@@ -18,6 +21,9 @@ pipeline {
             }
         }
         stage('Deploy to QA') {
+            when {
+                branch 'qa'
+            }
             steps {
                 echo 'Deploying to QA environment'
                 deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
@@ -26,6 +32,9 @@ pipeline {
             }
         }
         stage('Deploy to Staging') {
+            when {
+                branch 'staging'
+            }
             steps {
                 echo 'Deploying to Staging environment'
                 deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
@@ -34,6 +43,14 @@ pipeline {
             }
         }
         stage('Deploy to Prod') {
+            when {
+                branch 'master'
+                beforeAgent true
+                input {
+                    message "Proceed with deployment to Production?"
+                    ok "Deploy to Production"
+                }
+            }
             steps {
                 echo 'Deploying to Production environment'
                 deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
