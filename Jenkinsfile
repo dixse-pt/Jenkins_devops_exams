@@ -44,7 +44,7 @@ pipeline {
             }
             steps {
                 echo 'Proceed with deployment to Production?'
-                input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
+                input message: "Proceed with deployment to Production?", ok: "Deploy to Production !"
                 echo 'Deploying to Production environment'
                 // Étapes de déploiement vers Prod (validation manuelle requise)
             }
