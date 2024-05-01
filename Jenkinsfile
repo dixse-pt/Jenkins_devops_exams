@@ -1,51 +1,52 @@
 pipeline {
-    environment {
-        DOCKER_ID = "jlnlndr17"
-        DOCKER_TAG = "v.${BUILD_ID}.0"
-        DEV_NAMESPACE = "dev"
-        QA_NAMESPACE = "qa"
-        STAGING_NAMESPACE = "staging"
-        PROD_NAMESPACE = "prod"
-    }
     agent any
+
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+        
         stage('Deploy to Dev') {
             when {
-                branch 'development'
+                branch 'master'
             }
             steps {
                 echo 'Deploying to Dev environment'
-                // Place your deployment steps here for the development environment
+                // Étapes de déploiement vers Dev
             }
         }
+        
         stage('Deploy to QA') {
             when {
-                branch 'qa'
+                branch 'master'
             }
             steps {
                 echo 'Deploying to QA environment'
-                // Place your deployment steps here for the QA environment
+                // Étapes de déploiement vers QA
             }
         }
+        
         stage('Deploy to Staging') {
             when {
-                branch 'staging'
+                branch 'master'
             }
             steps {
                 echo 'Deploying to Staging environment'
-                // Place your deployment steps here for the staging environment
+                // Étapes de déploiement vers Staging
             }
         }
+        
         stage('Deploy to Prod') {
             when {
                 branch 'master'
             }
             steps {
-                script {
-                    input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
-                    echo 'Deploying to Production environment'
-                    // Place your deployment steps here for the production environment
-                }
+                echo 'Proceed with deployment to Production?'
+                input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
+                echo 'Deploying to Production environment'
+                // Étapes de déploiement vers Prod (validation manuelle requise)
             }
         }
     }
