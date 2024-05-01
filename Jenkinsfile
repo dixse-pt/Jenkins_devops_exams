@@ -1,6 +1,6 @@
 pipeline {
     environment {
-        DOCKER_ID = "jlnlndr17"
+        DOCKER_ID = "fallewi"
         DOCKER_TAG = "v.${BUILD_ID}.0"
         DEV_NAMESPACE = "dev"
         QA_NAMESPACE = "qa"
@@ -9,33 +9,15 @@ pipeline {
     }
     agent any
     stages {
-        stage('Build Docker Images') {
-            steps {
-                script {
-                    docker.build("movie-service:$DOCKER_TAG", "./movie-service")
-                    docker.build("cast-service:$DOCKER_TAG", "./cast-service")
-                    docker.build("nginx:$DOCKER_TAG", "./nginx")
-                }
-            }
-        }
-        stage('Push Docker Images') {
-            steps {
-                script {
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-                        docker.image("movie-service:$DOCKER_TAG").push()
-                        docker.image("cast-service:$DOCKER_TAG").push()
-                        docker.image("nginx:$DOCKER_TAG").push()
-                    }
-                }
-            }
-        }
         stage('Deploy to Dev') {
             when {
                 branch 'development'
             }
             steps {
                 echo 'Deploying to Dev environment'
-                deployToKubernetes(namespace: DEV_NAMESPACE)
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "fallewi/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "fallewi/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "fallewi/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
         stage('Deploy to QA') {
@@ -44,7 +26,9 @@ pipeline {
             }
             steps {
                 echo 'Deploying to QA environment'
-                deployToKubernetes(namespace: QA_NAMESPACE)
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "fallewi/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "fallewi/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "fallewi/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
         stage('Deploy to Staging') {
@@ -53,7 +37,9 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Staging environment'
-                deployToKubernetes(namespace: STAGING_NAMESPACE)
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "fallewi/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "fallewi/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "fallewi/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
         stage('Deploy to Prod') {
@@ -62,16 +48,6 @@ pipeline {
             }
             steps {
                 echo 'Deploying to Production environment'
-                deployToKubernetes(namespace: PROD_NAMESPACE)
-            }
-        }
-    }
-}
-
-def deployToKubernetes(namespace) {
-    // Utiliser kubectl ou Helm pour déployer les ressources dans le namespace spécifié
-    // Par exemple :
-    sh "kubectl apply -f ./kubernetes/${namespace}"
-    // Ou
-    // sh "helm upgrade --install myapp ./helm-chart --namespace=${namespace}"
-}
+                deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "fallewi/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "fallewi/cast-service", tag: DOCKER_TAG)
+                dep
