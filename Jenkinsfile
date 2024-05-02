@@ -12,35 +12,52 @@ pipeline {
         stage('Deploy to Dev') {
             steps {
                 echo 'Deploying to Dev environment'
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                script {
+                    deployToKubernetes(
+                        kubeconfigId: 'config', // Identifier of Kubernetes configuration in Jenkins
+                        configs: 'kubernetes/dev-configs.yaml', // Path to Kubernetes configuration file
+                        kubeNamespace: DEV_NAMESPACE, // Namespace in Kubernetes
+                        enableConfigSubstitution: true
+                    )
+                }
             }
         }
         stage('Deploy to QA') {
             steps {
                 echo 'Deploying to QA environment'
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                script {
+                    deployToKubernetes(
+                        kubeconfigId: 'config',
+                        configs: 'kubernetes/qa-configs.yaml',
+                        kubeNamespace: QA_NAMESPACE,
+                        enableConfigSubstitution: true
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
             steps {
                 echo 'Deploying to Staging environment'
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                script {
+                    deployToKubernetes(
+                        kubeconfigId: 'config',
+                        configs: 'kubernetes/staging-configs.yaml',
+                        kubeNamespace: STAGING_NAMESPACE,
+                        enableConfigSubstitution: true
+                    )
+                }
             }
         }
         stage('Deploy to Prod') {
             steps {
+                echo 'Deploying to Production environment'
                 script {
-                    input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
-                    echo 'Deploying to Production environment'
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
-                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                    deployToKubernetes(
+                        kubeconfigId: 'config',
+                        configs: 'kubernetes/prod-configs.yaml',
+                        kubeNamespace: PROD_NAMESPACE,
+                        enableConfigSubstitution: true
+                    )
                 }
             }
         }
