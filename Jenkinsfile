@@ -44,7 +44,10 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    cat $KUBECONFIG > .kube/config
+
+                    cat "$KUBECONFIG" > .kube/config
+                    echo "Chemin kubeconfig : $KUBECONFIG"
+
                     cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install movie-service ./kubernetes/helm/movie-service-chart --values=values.yml --namespace dev
