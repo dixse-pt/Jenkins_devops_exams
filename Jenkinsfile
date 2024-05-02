@@ -1,59 +1,46 @@
 pipeline {
+    agent any
+    
     environment {
-        DOCKER_ID = "jlnlndr17"
-        DOCKER_TAG = "v.${BUILD_ID}.0"
         DEV_NAMESPACE = "dev"
         QA_NAMESPACE = "qa"
         STAGING_NAMESPACE = "staging"
         PROD_NAMESPACE = "prod"
     }
-    agent any
+    
     stages {
-        stage('Deploy to Dev') {
+        stage('Write to Dev Namespace') {
             steps {
-                echo 'Deploying to Dev environment'
                 script {
-                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${DEV_NAMESPACE} -f values.yaml"
+                    writeFile file: "${DEV_NAMESPACE}-file.txt", text: "This file is written to the ${DEV_NAMESPACE} namespace."
+                    echo "File written to ${DEV_NAMESPACE}-file.txt"
                 }
             }
         }
-        stage('Deploy to QA') {
+        
+        stage('Write to QA Namespace') {
             steps {
-                echo 'Deploying to QA environment'
                 script {
-                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${QA_NAMESPACE} -f values.yaml"
+                    writeFile file: "${QA_NAMESPACE}-file.txt", text: "This file is written to the ${QA_NAMESPACE} namespace."
+                    echo "File written to ${QA_NAMESPACE}-file.txt"
                 }
             }
         }
-        stage('Deploy to Staging') {
+        
+        stage('Write to Staging Namespace') {
             steps {
-                echo 'Deploying to Staging environment'
                 script {
-                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${STAGING_NAMESPACE} -f values.yaml"
+                    writeFile file: "${STAGING_NAMESPACE}-file.txt", text: "This file is written to the ${STAGING_NAMESPACE} namespace."
+                    echo "File written to ${STAGING_NAMESPACE}-file.txt"
                 }
             }
         }
-        stage('Deploy to Prod') {
+        
+        stage('Write to Prod Namespace') {
             steps {
-                echo 'Deploying to Production environment'
                 script {
-                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
-                    // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${PROD_NAMESPACE} -f values.yaml"
+                    writeFile file: "${PROD_NAMESPACE}-file.txt", text: "This file is written to the ${PROD_NAMESPACE} namespace."
+                    echo "File written to ${PROD_NAMESPACE}-file.txt"
                 }
             }
         }
