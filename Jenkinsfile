@@ -42,85 +42,25 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    rm -Rf .kube
-                    mkdir .kube
+                        echo "test"
+                    '''
+                    // sh '''
+                    // rm -Rf .kube
+                    // mkdir .kube
 
-                    cat "$KUBECONFIG" > .kube/config
-                    echo "Chemin kubeconfig : $KUBECONFIG"
+                    // cat "$KUBECONFIG" > .kube/config
+                    // echo "Chemin kubeconfig : $KUBECONFIG"
 
-                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart/values.yaml --namespace dev
-                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart/values.yaml --namespace dev
-                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart/values.yaml --namespace dev
-                    '''
-                }
-            }
-        }
-        stage('Deploiement en QA') {
-            steps {
-                script {
-                    sh '''
-                    rm -Rf .kube
-                    mkdir .kube
-                    cat $KUBECONFIG > .kube/config
-                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service kubernetes/helm/movie-service-chart --values=values.yml --namespace dev
-                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service kubernetes/helm/cast-service-chart --values=values.yml --namespace dev
-                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres kubernetes/helm/postgresql-chart --values=values.yml --namespace dev
-                    '''
-                }
-            }
-        }
-        stage('Deploiement en staging') {
-            steps {
-                script {
-                    sh '''
-                    rm -Rf .kube
-                    mkdir .kube
-                    cat $KUBECONFIG > .kube/config
-                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace staging
-                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace staging
-                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace staging
-                    '''
-                }
-            }
-        }
-        stage('Deploiement en prod') {
-            steps {
-                script {
-                    timeout(time: 15, unit: "MINUTES") {
-                        input message: 'Voulez-vous déployer en production ?', ok: 'Oui'
-                    }
-                    sh '''
-                    rm -Rf .kube
-                    mkdir .kube
-                    cat $KUBECONFIG > .kube/config
-                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace prod
-                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace prod
-                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace prod
-                    '''
+                    // cp kubernetes/helm/movie-service-chart/values.yaml values.yml
+                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    // helm upgrade --install movie-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart/values.yaml --namespace dev
+                    // cp kubernetes/helm/cast-service-chart/values.yaml values.yml
+                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    // helm upgrade --install cast-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart/values.yaml --namespace dev
+                    // cp kubernetes/helm/postgresql-chart/values.yaml values.yml
+                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    // helm upgrade --install postgres /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart/values.yaml --namespace dev
+                    // '''
                 }
             }
         }
