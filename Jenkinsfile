@@ -50,13 +50,13 @@ pipeline {
 
                     cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service ./kubernetes/helm/movie-service-chart --values=values.yml --namespace dev
+                    helm upgrade --install movie-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart/values.yaml --namespace dev
                     cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service ./kubernetes/helm/cast-service-chart --values=values.yml --namespace dev
+                    helm upgrade --install cast-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart/values.yaml --namespace dev
                     cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres ./kubernetes/helm/postgresql-chart --values=values.yml --namespace dev
+                    helm upgrade --install postgres /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart/values.yaml --namespace dev
                     '''
                 }
             }
