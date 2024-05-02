@@ -1,0 +1,29 @@
+replicaCount: 1
+
+image:
+  repository: "jlnlndr17/movie-service"
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  port: 8000
+  targetPort: 8000
+  type: ClusterIP
+
+env:
+  - name: DATABASE_URI
+    value: "postgresql://movie_db_username:movie_db_password@movie_db/movie_db_dev"
+  - name: CAST_SERVICE_HOST_URL
+    value: "http://cast-service:8000/api/v1/casts/"
+
+serviceAccount:
+  create: true  # Ajout de cette ligne pour définir serviceAccount.create à true
+
+ingress:
+  enabled: false
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
