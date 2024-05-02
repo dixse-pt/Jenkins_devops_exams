@@ -2,6 +2,8 @@ pipeline {
     agent any
     
     environment {
+        KUBECONFIG = credentials("config") // On récupère kubeconfig depuis un fichier secret appelé "config" enregistré dans Jenkins
+        DOCKER_TAG = "v1.0.0" // Tag de l'image Docker à utiliser
         DEV_NAMESPACE = "dev"
         QA_NAMESPACE = "qa"
         STAGING_NAMESPACE = "staging"
@@ -9,58 +11,75 @@ pipeline {
     }
     
     stages {
-        stage('Write to Dev Namespace') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    writeFile file: "${DEV_NAMESPACE}-file.txt", text: "This file is written to the ${DEV_NAMESPACE} namespace."
-                    echo "File written to ${DEV_NAMESPACE}-file.txt"
+                    // Build de l'image Docker
+                    docker.build("mon_projet:${DOCKER_TAG}")
                 }
             }
         }
-
-        stage('Deploiement en dev') {
-            environment {
-                KUBECONFIG = credentials("config") // Récupérer le kubeconfig depuis le secret "config"
-            }
+        
+        stage('Deploy to Dev') {
             steps {
                 script {
+                    // Configuration pour le déploiement en Dev
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
-                    ls
-                    cat $KUBECONFIG > .kube/config
+                    cp $KUBECONFIG .kube/config
                     cp fastapi/values.yaml values.yml
-                    cat values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install app fastapi --values=values.yml --namespace dev
+                    helm upgrade --install app fastapi --values=values.yml --namespace ${DEV_NAMESPACE}
                     '''
                 }
             }
         }
         
-        stage('Write to QA Namespace') {
+        stage('Deploy to QA') {
             steps {
                 script {
-                    writeFile file: "${QA_NAMESPACE}-file.txt", text: "This file is written to the ${QA_NAMESPACE} namespace."
-                    echo "File written to ${QA_NAMESPACE}-file.txt"
+                    // Configuration pour le déploiement en QA
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cp $KUBECONFIG .kube/config
+                    cp fastapi/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install app fastapi --values=values.yml --namespace ${QA_NAMESPACE}
+                    '''
                 }
             }
         }
         
-        stage('Write to Staging Namespace') {
+        stage('Deploy to Staging') {
             steps {
                 script {
-                    writeFile file: "${STAGING_NAMESPACE}-file.txt", text: "This file is written to the ${STAGING_NAMESPACE} namespace."
-                    echo "File written to ${STAGING_NAMESPACE}-file.txt"
+                    // Configuration pour le déploiement en Staging
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cp $KUBECONFIG .kube/config
+                    cp fastapi/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install app fastapi --values=values.yml --namespace ${STAGING_NAMESPACE}
+                    '''
                 }
             }
         }
         
-        stage('Write to Prod Namespace') {
+        stage('Deploy to Prod') {
             steps {
                 script {
-                    writeFile file: "${PROD_NAMESPACE}-file.txt", text: "This file is written to the ${PROD_NAMESPACE} namespace."
-                    echo "File written to ${PROD_NAMESPACE}-file.txt"
+                    // Configuration pour le déploiement en Prod
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cp $KUBECONFIG .kube/config
+                    cp fastapi/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install app fastapi --values=values.yml --namespace ${PROD_NAMESPACE}
+                    '''
                 }
             }
         }
