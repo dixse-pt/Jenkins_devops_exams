@@ -1,4 +1,5 @@
-{{- if .Values.replicaCount }}
+# deployment.yaml
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -6,7 +7,7 @@ metadata:
   labels:
     app: {{ include "cast-service.name" . }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       app: {{ include "cast-service.name" . }}
@@ -16,15 +17,13 @@ spec:
         app: {{ include "cast-service.name" . }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "cast-service.name" . }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: {{ .Values.service.port }}
+            - containerPort: {{ .Values.servicePort }}
           env:
             - name: DATABASE_URI
-              value: "{{ .Values.env.DATABASE_URI }}"
-            - name: CAST_SERVICE_HOST_URL
-              value: "{{ .Values.env.CAST_SERVICE_HOST_URL }}"
-{{ toYaml .Values.image | indent 12 }}
-{{ toYaml .Values.resources | indent 12 }}
-{{- end }}
+              value: "postgresql://{{ .Values.database.user }}:{{ .Values.database.password }}@{{ .Values.database.name }}/cast_db_dev"
+          # Add other environment variables if needed
+          # - name: ENV_VAR_NAME
+          #   value: "VALUE"
