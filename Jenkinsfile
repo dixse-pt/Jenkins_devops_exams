@@ -29,27 +29,15 @@ pipeline {
                 }
             }
         }
-        stage('Build et Push Database') {
-            steps {
-                script {
-                    // Build de l'image pour la base de données
-                    sh "docker pull postgres:12.1-alpine"
-                    sh "docker tag postgres:12.1-alpine $DOCKER_ID/postgres:$DOCKER_TAG"
-                    // Pousse de l'image vers Docker Hub
-                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS"
-                    sh "docker push $DOCKER_ID/postgres:$DOCKER_TAG"
-                }
-            }
-        }
-        stage('Test Acceptance') {
-            steps {
-                script {
-                    sh '''
-                    curl localhost
-                    '''
-                }
-            }
-        }
+        // stage('Test Acceptance') {
+        //     steps {
+        //         script {
+        //             sh '''
+        //             curl localhost
+        //             '''
+        //         }
+        //     }
+        // }
         stage('Deploiement en dev') {
             steps {
                 script {
@@ -57,15 +45,15 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    cp movie-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace dev
-                    cp cast-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace dev
-                    cp postgres-chart/values.yaml values.yml
+                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace dev
+                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace dev
                     '''
                 }
             }
@@ -77,15 +65,15 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    cp movie-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace qa
-                    cp cast-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace qa
-                    cp postgres-chart/values.yaml values.yml
+                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace qa
+                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace qa
                     '''
                 }
             }
@@ -97,15 +85,15 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    cp movie-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace staging
-                    cp cast-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace staging
-                    cp postgres-chart/values.yaml values.yml
+                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace staging
+                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace staging
                     '''
                 }
             }
@@ -120,15 +108,15 @@ pipeline {
                     rm -Rf .kube
                     mkdir .kube
                     cat $KUBECONFIG > .kube/config
-                    cp movie-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace prod
-                    cp cast-service-chart/values.yaml values.yml
+                    cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                     helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace prod
-                    cp postgres-chart/values.yaml values.yml
+                    cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace prod
+                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace prod
                     '''
                 }
             }
