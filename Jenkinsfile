@@ -44,9 +44,12 @@ pipeline {
                     sh '''
                     rm -Rf .kube
                     mkdir .kube
+                    ls
                     cat $KUBECONFIG > .kube/config
-                    kubectl apply -f kubernetes/deployment.yaml --namespace dev
-                    kubectl apply -f kubernetes/service.yaml --namespace dev
+                    cp fastapi/values.yaml values.yml
+                    cat values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install ~/Jenkins_devops_exams fastapi --values=values.yml --namespace dev
                     '''
                 }
             }
