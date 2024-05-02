@@ -46,7 +46,8 @@ pipeline {
                 rm -Rf .kube
                 mkdir .kube
                 ls
-                cp fastapi/values.yaml values.yml
+                cp cast-service/values.yaml values.yml
+                cp movie-service/values.yaml values.yml
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
                 helm upgrade --install cast-service cast --values=values.yml --namespace dev
