@@ -3,6 +3,7 @@ pipeline {
     environment {
         DOCKER_ID = "jlnlndr17"
         DOCKER_TAG = "v.${BUILD_ID}.0"
+        DOCKER_PASS = credentials("DOCKER_HUB_PASS")
         KUBECONFIG = credentials("config")
     }
     stages {
