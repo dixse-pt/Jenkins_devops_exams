@@ -52,12 +52,11 @@ pipeline {
                     cat movie_values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" cast_values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" movie_values.yml
-                    helm upgrade --install cast-service cast --values=cast_values.yml --namespace dev
-                    helm upgrade --install movie-service movie --values=movie_values.yml --namespace dev
+                    helm upgrade --install cast-service ./cast-service/cast --values=cast_values.yml --namespace dev
+                    helm upgrade --install movie-service ./movie-service/movie --values=movie_values.yml --namespace dev
                     '''
                 }
             }
         }
-
     }
 }
