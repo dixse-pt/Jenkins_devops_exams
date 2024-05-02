@@ -13,12 +13,11 @@ pipeline {
             steps {
                 echo 'Deploying to Dev environment'
                 script {
-                    deployToKubernetes(
-                        kubeconfigId: 'config', // Identifier of Kubernetes configuration in Jenkins
-                        configs: 'kubernetes/dev-configs.yaml', // Path to Kubernetes configuration file
-                        kubeNamespace: DEV_NAMESPACE, // Namespace in Kubernetes
-                        enableConfigSubstitution: true
-                    )
+                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    // Appliquer les déploiements Kubernetes
+                    sh "helm upgrade --install movie-service charts/movie-service -n ${DEV_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -26,12 +25,11 @@ pipeline {
             steps {
                 echo 'Deploying to QA environment'
                 script {
-                    deployToKubernetes(
-                        kubeconfigId: 'config',
-                        configs: 'kubernetes/qa-configs.yaml',
-                        kubeNamespace: QA_NAMESPACE,
-                        enableConfigSubstitution: true
-                    )
+                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    // Appliquer les déploiements Kubernetes
+                    sh "helm upgrade --install movie-service charts/movie-service -n ${QA_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -39,12 +37,11 @@ pipeline {
             steps {
                 echo 'Deploying to Staging environment'
                 script {
-                    deployToKubernetes(
-                        kubeconfigId: 'config',
-                        configs: 'kubernetes/staging-configs.yaml',
-                        kubeNamespace: STAGING_NAMESPACE,
-                        enableConfigSubstitution: true
-                    )
+                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    // Appliquer les déploiements Kubernetes
+                    sh "helm upgrade --install movie-service charts/movie-service -n ${STAGING_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -52,12 +49,11 @@ pipeline {
             steps {
                 echo 'Deploying to Production environment'
                 script {
-                    deployToKubernetes(
-                        kubeconfigId: 'config',
-                        configs: 'kubernetes/prod-configs.yaml',
-                        kubeNamespace: PROD_NAMESPACE,
-                        enableConfigSubstitution: true
-                    )
+                    // Remplacer les variables dans les fichiers de déploiement Helm Chart
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    // Appliquer les déploiements Kubernetes
+                    sh "helm upgrade --install movie-service charts/movie-service -n ${PROD_NAMESPACE} -f values.yaml"
                 }
             }
         }
