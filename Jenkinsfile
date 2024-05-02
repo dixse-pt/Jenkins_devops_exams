@@ -38,6 +38,7 @@ pipeline {
         //         }
         //     }
         // }
+
         stage('Deploiement en dev') {
             steps {
                 script {
@@ -48,7 +49,8 @@ pipeline {
                 cp fastapi/values.yaml values.yml
                 cat values.yml
                 sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install app fastapi --values=values.yml --namespace dev
+                helm upgrade --install cast-service cast --values=values.yml --namespace dev
+                helm upgrade --install movie-service movie --values=values.yml --namespace dev
                 '''
                 }
             }
