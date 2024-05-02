@@ -41,16 +41,16 @@ pipeline {
         stage('Deploiement en dev') {
             steps {
                 script {
-                    sh '''
-                    rm -Rf .kube
-                    mkdir .kube
-                    ls
-                    cat $KUBECONFIG > .kube/config
-                    cp fastapi/values.yaml values.yml
-                    cat values.yml
-                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install ~/Jenkins_devops_exams fastapi --values=values.yml --namespace dev
-                    '''
+                sh '''
+                rm -Rf .kube
+                mkdir .kube
+                ls
+                cat $KUBECONFIG > .kube/config
+                cp fastapi/values.yaml values.yml
+                cat values.yml
+                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                helm upgrade --install app fastapi --values=values.yml --namespace dev
+                '''
                 }
             }
         }
