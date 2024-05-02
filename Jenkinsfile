@@ -1,44 +1,54 @@
 pipeline {
+    agent any
     environment {
-        DOCKER_ID = "jlnlndr17" // Remplacez ceci par votre ID Docker
-        DOCKER_TAG = "v.${BUILD_ID}.0" // Nous allons taguer nos images avec le numéro de build actuel pour l'incrémenter de 1 à chaque nouvelle build
+        DOCKER_ID = "jlnlndr17"
+        DOCKER_TAG = "v.${BUILD_ID}.0"
+        KUBECONFIG = credentials("config")
     }
-    agent any // Jenkins pourra sélectionner tous les agents disponibles
     stages {
         stage('Build et Push Movie Service') {
-            environment {
-                DOCKER_MOVIE_IMAGE = "movie-service"
-            }
             steps {
                 script {
                     // Build de l'image pour le service Movie
-                    sh "docker build -t $DOCKER_ID/$DOCKER_MOVIE_IMAGE:$DOCKER_TAG ./movie-service"
+                    sh "docker build -t $DOCKER_ID/movie-service:$DOCKER_TAG ./movie-service"
                     // Pousse de l'image vers Docker Hub
-                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS" // Assurez-vous de définir DOCKER_PASS dans les paramètres Jenkins
-                    sh "docker push $DOCKER_ID/$DOCKER_MOVIE_IMAGE:$DOCKER_TAG"
+                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS"
+                    sh "docker push $DOCKER_ID/movie-service:$DOCKER_TAG"
                 }
             }
         }
         stage('Build et Push Cast Service') {
-            environment {
-                DOCKER_CAST_IMAGE = "cast-service"
-            }
             steps {
                 script {
                     // Build de l'image pour le service Cast
-                    sh "docker build -t $DOCKER_ID/$DOCKER_CAST_IMAGE:$DOCKER_TAG ./cast-service"
+                    sh "docker build -t $DOCKER_ID/cast-service:$DOCKER_TAG ./cast-service"
                     // Pousse de l'image vers Docker Hub
-                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS" // Assurez-vous de définir DOCKER_PASS dans les paramètres Jenkins
-                    sh "docker push $DOCKER_ID/$DOCKER_CAST_IMAGE:$DOCKER_TAG"
+                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS"
+                    sh "docker push $DOCKER_ID/cast-service:$DOCKER_TAG"
                 }
             }
         }
-        stage('Test Acceptance') {
+        stage('Build et Push Database') {
             steps {
                 script {
-                    // Exécutez vos tests d'acceptation ici
+                    // Build de l'image pour la base de données
+                    sh "docker pull postgres:12.1-alpine"
+                    sh "docker tag postgres:12.1-alpine $DOCKER_ID/postgres:$DOCKER_TAG"
+                    // Pousse de l'image vers Docker Hub
+                    sh "docker login -u $DOCKER_ID -p $DOCKER_PASS"
+                    sh "docker push $DOCKER_ID/postgres:$DOCKER_TAG"
                 }
             }
+        }
+        stage('Test Acceptance'){ // we launch the curl command to validate that the container responds to the request
+            steps {
+                    script {
+                    sh '''
+                    curl localhost
+                    '''
+                    }
+            }
+
         }
     }
 
