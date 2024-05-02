@@ -1,52 +1,47 @@
 pipeline {
+    environment {
+        DOCKER_ID = "jlnlndr17"
+        DOCKER_TAG = "v.${BUILD_ID}.0"
+        DEV_NAMESPACE = "dev"
+        QA_NAMESPACE = "qa"
+        STAGING_NAMESPACE = "staging"
+        PROD_NAMESPACE = "prod"
+    }
     agent any
-
     stages {
-        stage('Checkout SCM') {
-            steps {
-                checkout scm
-            }
-        }
-        
         stage('Deploy to Dev') {
-            when {
-                branch 'master'
-            }
             steps {
                 echo 'Deploying to Dev environment'
-                // Étapes de déploiement vers Dev
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: DEV_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
-        
         stage('Deploy to QA') {
-            when {
-                branch 'master'
-            }
             steps {
                 echo 'Deploying to QA environment'
-                // Étapes de déploiement vers QA
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: QA_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
-        
         stage('Deploy to Staging') {
-            when {
-                branch 'master'
-            }
             steps {
                 echo 'Deploying to Staging environment'
-                // Étapes de déploiement vers Staging
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
+                deployToKubernetes(namespace: STAGING_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
             }
         }
-        
         stage('Deploy to Prod') {
-            when {
-                branch 'master'
-            }
             steps {
-                echo 'Proceed with deployment to Production?'
-                input message: "Proceed with deployment to Production?", ok: "Deploy to Production !"
-                echo 'Deploying to Production environment'
-                // Étapes de déploiement vers Prod (validation manuelle requise)
+                script {
+                    input message: "Proceed with deployment to Production?", ok: "Deploy to Production"
+                    echo 'Deploying to Production environment'
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/movie-service", tag: DOCKER_TAG)
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/cast-service", tag: DOCKER_TAG)
+                    deployToKubernetes(namespace: PROD_NAMESPACE, imageName: "jlnlndr17/python-microservice-fastapi", tag: DOCKER_TAG)
+                }
             }
         }
     }
