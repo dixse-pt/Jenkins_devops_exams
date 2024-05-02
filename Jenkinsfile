@@ -14,10 +14,10 @@ pipeline {
                 echo 'Deploying to Dev environment'
                 script {
                     // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
                     // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service charts/movie-service -n ${DEV_NAMESPACE} -f values.yaml"
+                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${DEV_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -26,10 +26,10 @@ pipeline {
                 echo 'Deploying to QA environment'
                 script {
                     // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
                     // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service charts/movie-service -n ${QA_NAMESPACE} -f values.yaml"
+                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${QA_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -38,10 +38,10 @@ pipeline {
                 echo 'Deploying to Staging environment'
                 script {
                     // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
                     // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service charts/movie-service -n ${STAGING_NAMESPACE} -f values.yaml"
+                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${STAGING_NAMESPACE} -f values.yaml"
                 }
             }
         }
@@ -50,10 +50,10 @@ pipeline {
                 echo 'Deploying to Production environment'
                 script {
                     // Remplacer les variables dans les fichiers de déploiement Helm Chart
-                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' charts/movie-service/templates/deployment.yaml"
-                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_ID}}/${DOCKER_ID}/g' fastapi/charts/movie-service/templates/deployment.yaml"
+                    sh "sed -i 's/{{DOCKER_TAG}}/${DOCKER_TAG}/g' fastapi/charts/movie-service/templates/deployment.yaml"
                     // Appliquer les déploiements Kubernetes
-                    sh "helm upgrade --install movie-service charts/movie-service -n ${PROD_NAMESPACE} -f values.yaml"
+                    sh "helm upgrade --install movie-service fastapi/charts/movie-service -n ${PROD_NAMESPACE} -f values.yaml"
                 }
             }
         }
