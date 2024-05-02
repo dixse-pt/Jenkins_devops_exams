@@ -40,101 +40,96 @@ pipeline {
                 }
             }
         }
-        stage('Test Acceptance'){ // we launch the curl command to validate that the container responds to the request
+        stage('Test Acceptance') {
             steps {
-                    script {
+                script {
                     sh '''
                     curl localhost
                     '''
-                    }
-            }
-
-        }
-    }
-
-    stage('Deploiement en dev') {
-        steps {
-            script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                cat $KUBECONFIG > .kube/config
-                cp movie-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace dev
-                cp cast-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace dev
-                cp postgres-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install postgres postgres-chart --values=values.yml --namespace dev
-                '''
-            }
-        }
-    }
-
-    stage('Deploiement en QA') {
-        steps {
-            script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                cat $KUBECONFIG > .kube/config
-                cp movie-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace qa
-                cp cast-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace qa
-                cp postgres-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install postgres postgres-chart --values=values.yml --namespace qa
-                '''
-            }
-        }
-    }
-
-    stage('Deploiement en staging') {
-        steps {
-            script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                cat $KUBECONFIG > .kube/config
-                cp movie-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace staging
-                cp cast-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace staging
-                cp postgres-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install postgres postgres-chart --values=values.yml --namespace staging
-                '''
-            }
-        }
-    }
-
-    stage('Deploiement en prod') {
-        steps {
-            script {
-                timeout(time: 15, unit: "MINUTES") {
-                    input message: 'Voulez-vous déployer en production ?', ok: 'Oui'
                 }
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                cat $KUBECONFIG > .kube/config
-                cp movie-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace prod
-                cp cast-service-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace prod
-                cp postgres-chart/values.yaml values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install postgres postgres-chart --values=values.yml --namespace prod
-                '''
+            }
+        }
+        stage('Deploiement en dev') {
+            steps {
+                script {
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cat $KUBECONFIG > .kube/config
+                    cp movie-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace dev
+                    cp cast-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace dev
+                    cp postgres-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace dev
+                    '''
+                }
+            }
+        }
+        stage('Deploiement en QA') {
+            steps {
+                script {
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cat $KUBECONFIG > .kube/config
+                    cp movie-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace qa
+                    cp cast-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace qa
+                    cp postgres-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace qa
+                    '''
+                }
+            }
+        }
+        stage('Deploiement en staging') {
+            steps {
+                script {
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cat $KUBECONFIG > .kube/config
+                    cp movie-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace staging
+                    cp cast-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace staging
+                    cp postgres-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace staging
+                    '''
+                }
+            }
+        }
+        stage('Deploiement en prod') {
+            steps {
+                script {
+                    timeout(time: 15, unit: "MINUTES") {
+                        input message: 'Voulez-vous déployer en production ?', ok: 'Oui'
+                    }
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    cat $KUBECONFIG > .kube/config
+                    cp movie-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace prod
+                    cp cast-service-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace prod
+                    cp postgres-chart/values.yaml values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                    helm upgrade --install postgres postgres-chart --values=values.yml --namespace prod
+                    '''
+                }
             }
         }
     }
