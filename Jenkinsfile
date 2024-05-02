@@ -42,32 +42,12 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        rm -Rf .kube
-                        mkdir .kube
-                        ls
-                        cat $KUBECONFIG > .kube/config
-                        cp kubernetes/movie-service-chart/values.yaml values.yaml
-                        cat values.yaml
-                        sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                        helm upgrade --install app kubernetes --values=values.yml --namespace dev
+                    rm -Rf .kube
+                    mkdir .kube
+                    cat $KUBECONFIG > .kube/config
+                    kubectl apply -f kubernetes/deployment.yaml --namespace dev
+                    kubectl apply -f kubernetes/service.yaml --namespace dev
                     '''
-                    // sh '''
-                    // rm -Rf .kube
-                    // mkdir .kube
-
-                    // cat "$KUBECONFIG" > .kube/config
-                    // echo "Chemin kubeconfig : $KUBECONFIG"
-
-                    // cp kubernetes/helm/movie-service-chart/values.yaml values.yml
-                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    // helm upgrade --install movie-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/movie-service-chart/values.yaml --namespace dev
-                    // cp kubernetes/helm/cast-service-chart/values.yaml values.yml
-                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    // helm upgrade --install cast-service /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/cast-service-chart/values.yaml --namespace dev
-                    // cp kubernetes/helm/postgresql-chart/values.yaml values.yml
-                    // sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    // helm upgrade --install postgres /home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart --values=/home/ubuntu/Jenkins_devops_exams/kubernetes/helm/postgresql-chart/values.yaml --namespace dev
-                    // '''
                 }
             }
         }

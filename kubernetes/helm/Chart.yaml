@@ -1,0 +1,4 @@
+apiVersion: v2
+name: movie-service-chart
+description: A Helm chart for deploying the movie service
+version: 1.0.0

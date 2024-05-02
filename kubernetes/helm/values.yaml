@@ -1,0 +1,11 @@
+image:
+  repository: jlnlndr17/movie-service
+  tag: v1.0
+  pullPolicy: IfNotPresent
+
+database:
+  user: movie_db_username
+  password: movie_db_password
+  name: movie_db_dev
+
+servicePort: 8000
