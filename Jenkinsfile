@@ -67,13 +67,13 @@ pipeline {
                     cat $KUBECONFIG > .kube/config
                     cp kubernetes/helm/movie-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install movie-service movie-service-chart --values=values.yml --namespace qa
+                    helm upgrade --install movie-service kubernetes/helm/movie-service-chart --values=values.yml --namespace dev
                     cp kubernetes/helm/cast-service-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install cast-service cast-service-chart --values=values.yml --namespace qa
+                    helm upgrade --install cast-service kubernetes/helm/cast-service-chart --values=values.yml --namespace dev
                     cp kubernetes/helm/postgresql-chart/values.yaml values.yml
                     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                    helm upgrade --install postgres postgresql-chart --values=values.yml --namespace qa
+                    helm upgrade --install postgres kubernetes/helm/postgresql-chart --values=values.yml --namespace dev
                     '''
                 }
             }
