@@ -42,7 +42,14 @@ pipeline {
             steps {
                 script {
                     sh '''
-                        echo "test"
+                        rm -Rf .kube
+                        mkdir .kube
+                        ls
+                        cat $KUBECONFIG > .kube/config
+                        cp kubernetes/movie-service-chart/values.yaml values.yaml
+                        cat values.yaml
+                        sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+                        helm upgrade --install app kubernetes --values=values.yml --namespace dev
                     '''
                     // sh '''
                     // rm -Rf .kube
