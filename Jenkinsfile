@@ -29,15 +29,8 @@ pipeline {
                 }
             }
         }
-        // stage('Test Acceptance') {
-        //     steps {
-        //         script {
-        //             sh '''
-        //             curl localhost
-        //             '''
-        //         }
-        //     }ls
-        // }
+       
+       
 
         stage('Deploiement en dev') {
             steps {
