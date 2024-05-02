@@ -103,6 +103,9 @@ pipeline {
         }
 
         stage('Deploiement en prod') {
+            when {
+                branch 'master'
+            }
             steps {
                 script {
                     sh '''
