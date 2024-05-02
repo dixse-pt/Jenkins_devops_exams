@@ -1,13 +1,11 @@
-# service.yaml
-
 apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "movie-service.fullname" . }}
 spec:
   selector:
-    app: {{ include "movie-service.name" . }}
+    app: movie-service
   ports:
-    - protocol: TCP
-      port: {{ .Values.servicePort }}
-      targetPort: {{ .Values.containerPort }}
+  - protocol: TCP
+    port: 8000
+    targetPort: 8000
