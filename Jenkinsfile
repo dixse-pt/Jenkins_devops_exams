@@ -36,25 +36,28 @@ pipeline {
         //             curl localhost
         //             '''
         //         }
-        //     }
+        //     }ls
         // }
 
         stage('Deploiement en dev') {
             steps {
                 script {
-                sh '''
-                rm -Rf .kube
-                mkdir .kube
-                ls
-                cp cast-service/values.yaml values.yml
-                cp movie-service/values.yaml values.yml
-                cat values.yml
-                sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-                helm upgrade --install cast-service cast --values=values.yml --namespace dev
-                helm upgrade --install movie-service movie --values=values.yml --namespace dev
-                '''
+                    sh '''
+                    rm -Rf .kube
+                    mkdir .kube
+                    ls
+                    cp cast-service/cast/values.yaml cast_values.yml
+                    cp movie-service/movie/values.yaml movie_values.yml
+                    cat cast_values.yml
+                    cat movie_values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" cast_values.yml
+                    sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" movie_values.yml
+                    helm upgrade --install cast-service cast --values=cast_values.yml --namespace dev
+                    helm upgrade --install movie-service movie --values=movie_values.yml --namespace dev
+                    '''
                 }
             }
         }
+
     }
 }
