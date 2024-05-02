@@ -1,0 +1,15 @@
+replicaCount: 1
+
+image:
+  repository: jlnlndr17/movie-service
+  tag: 1.0
+  pullPolicy: IfNotPresent
+
+service:
+  name: movie-service
+  port: 8000
+  type: ClusterIP
+
+env:
+  DATABASE_URI: "postgresql://movie_db_username:movie_db_password@movie_db/movie_db_dev"
+  CAST_SERVICE_HOST_URL: "http://cast_service:8000/api/v1/casts/"

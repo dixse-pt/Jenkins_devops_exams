@@ -1,0 +1,30 @@
+{{- if .Values.replicaCount }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "cast-service.fullname" . }}
+  labels:
+    app: {{ include "cast-service.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "cast-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "cast-service.name" . }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          ports:
+            - containerPort: {{ .Values.service.port }}
+          env:
+            - name: DATABASE_URI
+              value: "{{ .Values.env.DATABASE_URI }}"
+            - name: CAST_SERVICE_HOST_URL
+              value: "{{ .Values.env.CAST_SERVICE_HOST_URL }}"
+{{ toYaml .Values.image | indent 12 }}
+{{ toYaml .Values.resources | indent 12 }}
+{{- end }}
